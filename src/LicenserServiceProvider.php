@@ -12,6 +12,22 @@ class LicenserServiceProvider extends ServiceProvider
         $product = config('app.product_slug');
         $domain  = request()->getHost();
 
+    // 1) CLI override via .env (for composer, artisan, etc.)
+    $domain = env('LICENSE_DOMAIN');
+
+    // 2) Next try parsing APP_URL from .env
+    if (! $domain && config('app.url')) {
+        $domain = parse_url(config('app.url'), PHP_URL_HOST);
+    }
+
+    // 3) Then try the incoming HTTP request
+    if (! $domain && request()?->getHost()) {
+        $domain = request()->getHost();
+    }
+
+    // 4) Last resort: machine hostname
+    $domain = $domain ?: gethostname();
+
         if (! $key || ! $this->validate($key, $product, $domain)) {
             abort(403, 'Invalid or missing license for ' . $domain);
         }
