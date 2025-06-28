@@ -1,12 +1,12 @@
 <?php
-namespace Avsquare\Licenser;
+namespace AvsquareTechnologies\Licenser;
 
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client;
 
 class LicenserServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $key     = config('app.license_key');
         $product = config('app.product_slug');
@@ -22,16 +22,16 @@ class LicenserServiceProvider extends ServiceProvider
         $cacheKey = "avsquare_license_{$key}_{$product}_{$domain}";
 
         return cache()->remember($cacheKey, 1440, function () use ($key, $product, $domain) {
-            $client = new Client(['timeout'=>5]);
+            $client = new Client(['timeout' => 5]);
             $resp   = $client->post('https://licenses.avsquare.com/api/validate', [
-                'json' => compact('key','product','domain'),
+                'json' => compact('key', 'product', 'domain'),
             ]);
 
             if ($resp->getStatusCode() !== 200) {
                 return false;
             }
 
-            return data_get(json_decode($resp->getBody(), true), 'valid', false);
+            return data_get(json_decode((string) $resp->getBody(), true), 'valid', false);
         });
     }
 }

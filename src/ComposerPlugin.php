@@ -1,5 +1,5 @@
 <?php
-namespace Avsquare\Licenser;
+namespace AvsquareTechnologies\Licenser;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
@@ -8,18 +8,18 @@ use GuzzleHttp\Client;
 
 class ComposerPlugin implements PluginInterface
 {
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
         $key     = getenv('APP_LICENSE_KEY') ?: '';
         $product = getenv('PRODUCT_SLUG')    ?: '';
         $domain  = gethostname()             ?: '';
-        $client  = new Client(['timeout'=>5]);
+        $client  = new Client(['timeout' => 5]);
 
         try {
             $resp = $client->post('https://licenses.avsquare.com/api/validate', [
-                'json' => compact('key','product','domain'),
+                'json' => compact('key', 'product', 'domain'),
             ]);
-            $data = json_decode($resp->getBody(), true);
+            $data = json_decode((string) $resp->getBody(), true);
             if (! ($data['valid'] ?? false)) {
                 $io->writeError('ERROR: Invalid Avsquare license for ' . $domain);
                 exit(1);
