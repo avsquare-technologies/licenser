@@ -16,7 +16,7 @@ class ComposerPlugin implements PluginInterface
         $client  = new Client(['timeout' => 5]);
 
         try {
-            $resp = $client->post('https://licenses.avsquare.com/api/validate', [
+            $resp = $client->post('http://127.0.0.1:8000/api/validate', [
                 'json' => compact('key', 'product', 'domain'),
             ]);
             $data = json_decode((string) $resp->getBody(), true);
