@@ -1,0 +1,36 @@
+{
+    "name": "avsquare-technologies/licenser",
+    "description": "Avsquare domain-locked license plugin",
+    "type": "composer-plugin",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "AvsquareTechnologies\\Licenser\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Avsquare Technologies",
+            "email": "support@avsquaretechnologies.com"
+        }
+    ],
+      "extra": {
+        "laravel": {
+        "providers": [
+            "AvsquareTechnologies\\Licenser\\LicenserServiceProvider"
+        ]
+        },
+        "class": "AvsquareTechnologies\\Licenser\\ComposerPlugin"
+    },
+    "minimum-stability": "stable"
+}
