@@ -6,7 +6,8 @@
         "php": "^8.2",
         "composer-plugin-api": "^2.2",
         "illuminate/support": "^10.0 || ^11.0 || ^12.0",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "vlucas/phpdotenv": "^5.5"
     },
     "require-dev": {
         "php": "^8.2",

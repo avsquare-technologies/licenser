@@ -5,19 +5,26 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use GuzzleHttp\Client;
+use Dotenv\Dotenv;
 
 class ComposerPlugin implements PluginInterface
 {
     public function activate(Composer $composer, IOInterface $io): void
     {
-        $key     = getenv('APP_LICENSE_KEY') ?: '';
-        $product = getenv('PRODUCT_SLUG')    ?: '';
+        // 1) Load the app’s .env (if it exists) from the project root
+        if (file_exists(getcwd().'/.env')) {
+            Dotenv::createImmutable(getcwd())->safeLoad();
+        }
+
+        // 2) Now we can safely read from getenv() or $_ENV
+        $key     = getenv('APP_LICENSE_KEY') ?: ($_ENV['APP_LICENSE_KEY'] ?? '');
+        $product = getenv('PRODUCT_SLUG')    ?: ($_ENV['PRODUCT_SLUG']    ?? '');
         $domain  = gethostname()             ?: '';
         $client  = new Client(['timeout' => 5]);
 
         try {
             $resp = $client->post('http://127.0.0.1:8000/api/validate', [
-                'json' => compact('key', 'product', 'domain'),
+                'json' => compact('key','product','domain'),
             ]);
             $data = json_decode((string) $resp->getBody(), true);
             if (! ($data['valid'] ?? false)) {
@@ -30,14 +37,6 @@ class ComposerPlugin implements PluginInterface
         }
     }
 
-    // Required by Composer 2.x:
-    public function deactivate(Composer $composer, IOInterface $io): void
-    {
-        // No action needed on deactivate
-    }
-
-    public function uninstall(Composer $composer, IOInterface $io): void
-    {
-        // No action needed on uninstall
-    }
+    public function deactivate(Composer $composer, IOInterface $io): void { /*…*/ }
+    public function uninstall(Composer $composer, IOInterface $io): void { /*…*/ }
 }
