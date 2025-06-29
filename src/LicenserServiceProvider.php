@@ -39,7 +39,7 @@ class LicenserServiceProvider extends ServiceProvider
 
         return cache()->remember($cacheKey, 1440, function () use ($key, $product, $domain) {
             $client = new Client(['timeout' => 5]);
-            $resp   = $client->post('http://127.0.0.1:8000/api/validate', [
+            $resp   = $client->post('https://licenser.stageforav.com/api/validate', [
                 'json' => compact('key', 'product', 'domain'),
             ]);
 
